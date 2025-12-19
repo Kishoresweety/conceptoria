@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dangling Pointer & Segmentation Fault – Conceptoria</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f1220;
+  color: #eaeaf0;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* MEMORY */
+.memory {
+  display: flex;
+  justify-content: space-between;
+  margin: 50px 0;
+}
+
+.region {
+  width: 45%;
+  background: #161a33;
+  border: 2px solid #4fd1c5;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.region h2 {
+  color: #4fd1c5;
+}
+
+.stack-frame, .heap-block {
+  background: #0f1220;
+  border: 1px solid #4fd1c5;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.invalid {
+  border: 1px dashed red;
+  color: red;
+  opacity: 0.7;
+}
+
+/* CONTROLS */
+.controls button {
+  margin: 10px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.primary {
+  background: #4fd1c5;
+  color: #000;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid #4fd1c5;
+  color: #4fd1c5;
+}
+
+.danger {
+  background: #ff4d4d;
+  color: #000;
+}
+
+/* EXPLANATION */
+.explain {
+  margin-top: 30px;
+  background: #161a33;
+  padding: 20px;
+  border-radius: 10px;
+  min-height: 100px;
+  font-size: 1rem;
+}
+
+/* CRASH */
+.crash {
+  animation: shake 0.4s;
+  background: #400;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Dangling Pointer & Segmentation Fault</h1>
+<p>Why programs crash when memory is misused</p>
+
+<div class="container">
+
+  <div class="memory">
+
+    <!-- STACK -->
+    <div class="region">
+      <h2>Stack</h2>
+      <div class="stack-frame">
+        int *p;<br>
+        p = <span id="pVal">NULL</span>
+      </div>
+    </div>
+
+    <!-- HEAP -->
+    <div class="region">
+      <h2>Heap</h2>
+      <div id="heapArea"></div>
+    </div>
+
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button class="primary" onclick="allocate()">p = malloc()</button>
+    <button class="secondary" onclick="freeMem()">free(p)</button>
+    <button class="danger" onclick="useAfterFree()">*p = 99</button>
+    <button class="secondary" onclick="nullify()">p = NULL</button>
+    <button class="secondary" onclick="resetAll()">Reset</button>
+  </div>
+
+  <!-- EXPLANATION -->
+  <div class="explain" id="explainBox">
+    Click buttons to simulate dangling pointer behavior.
+  </div>
+
+</div>
+
+<script>
+let allocated = false;
+let freed = false;
+
+function allocate() {
+  if (allocated && !freed) {
+    explain("Memory already allocated. p points to valid heap memory.");
+    return;
+  }
+
+  document.getElementById("heapArea").innerHTML =
+    '<div class="heap-block" id="heapBlock">Heap Memory<br>Address: 0x700<br>Value: 42</div>';
+
+  document.getElementById("pVal").innerText = "0x700";
+  allocated = true;
+  freed = false;
+
+  explain("malloc() allocates heap memory. p stores its address.");
+}
+
+function freeMem() {
+  if (!allocated || freed) {
+    explain("Nothing to free.");
+    return;
+  }
+
+  document.getElementById("heapBlock").classList.add("invalid");
+  document.getElementById("heapBlock").innerText += "\n[FREED]";
+  freed = true;
+
+  explain("free(p) releases heap memory. p still holds the address → DANGLING POINTER.");
+}
+
+function useAfterFree() {
+  if (!allocated) {
+    segfault("p is NULL. Dereferencing causes segmentation fault.");
+    return;
+  }
+
+  if (freed) {
+    segfault("Using memory after free() → UNDEFINED BEHAVIOR → SEGMENTATION FAULT.");
+    return;
+  }
+
+  explain("*p = 99 safely writes value because memory is valid.");
+}
+
+function nullify() {
+  document.getElementById("pVal").innerText = "NULL";
+  explain("Setting p = NULL prevents accidental dereference of dangling pointer.");
+}
+
+function resetAll() {
+  allocated = false;
+  freed = false;
+  document.getElementById("heapArea").innerHTML = "";
+  document.getElementById("pVal").innerText = "NULL";
+  document.body.classList.remove("crash");
+  explain("Program restarted. Clean memory state.");
+}
+
+function segfault(message) {
+  document.body.classList.add("crash");
+  explain("❌ SEGMENTATION FAULT\n\n" + message);
+}
+
+function explain(text) {
+  document.getElementById("explainBox").innerText = text;
+}
+</script>
+
+</body>
+</html>
