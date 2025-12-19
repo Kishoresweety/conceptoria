@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Struct Memory Layout – Conceptoria</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f1220;
+  color: #eaeaf0;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* STRUCT AREA */
+.struct-box {
+  background: #161a33;
+  border: 2px solid #4fd1c5;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 40px auto;
+  width: 80%;
+}
+
+.member {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  background: #0f1220;
+  border: 1px solid #4fd1c5;
+}
+
+.padding {
+  background: #402020;
+  border: 1px dashed red;
+  opacity: 0.7;
+}
+
+/* CONTROLS */
+.controls button {
+  margin: 10px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.primary {
+  background: #4fd1c5;
+  color: #000;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid #4fd1c5;
+  color: #4fd1c5;
+}
+
+/* EXPLANATION */
+.explain {
+  margin-top: 30px;
+  background: #161a33;
+  padding: 20px;
+  border-radius: 10px;
+  min-height: 120px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Struct Memory Layout</h1>
+<p>Understand padding, alignment & sizeof(struct)</p>
+
+<div class="container">
+
+  <div class="struct-box" id="structBox">
+    <!-- Struct layout appears here -->
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button class="primary" onclick="layout1()">struct A</button>
+    <button class="secondary" onclick="layout2()">struct B (Reordered)</button>
+    <button class="secondary" onclick="resetAll()">Reset</button>
+  </div>
+
+  <!-- EXPLANATION -->
+  <div class="explain" id="explainBox">
+    Click a struct to visualize memory layout.
+  </div>
+
+</div>
+
+<script>
+function layout1() {
+  const box = document.getElementById("structBox");
+  box.innerHTML = `
+    <h2>struct A</h2>
+    <div class="member">char c (1 byte)</div>
+    <div class="member padding">padding (3 bytes)</div>
+    <div class="member">int i (4 bytes)</div>
+    <div class="member">double d (8 bytes)</div>
+    <div class="member padding">Total Size: 16 bytes</div>
+  `;
+  explain(
+    "char needs 1 byte, but int needs 4-byte alignment. Compiler inserts padding. Total size becomes 16 bytes."
+  );
+}
+
+function layout2() {
+  const box = document.getElementById("structBox");
+  box.innerHTML = `
+    <h2>struct B</h2>
+    <div class="member">double d (8 bytes)</div>
+    <div class="member">int i (4 bytes)</div>
+    <div class="member">char c (1 byte)</div>
+    <div class="member padding">padding (3 bytes)</div>
+    <div class="member padding">Total Size: 16 bytes</div>
+  `;
+  explain(
+    "Reordering reduces internal padding but alignment still applies. Member order affects memory efficiency."
+  );
+}
+
+function resetAll() {
+  document.getElementById("structBox").innerHTML = "";
+  explain("Select a struct to view its memory layout.");
+}
+
+function explain(text) {
+  document.getElementById("explainBox").innerText = text;
+}
+</script>
+
+</body>
+</html>
