@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn – Conceptoria</title>
+
+<style>
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== GLOBAL ===== */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #0f1220;
+  color: #eaeaf0;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  width: 90%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 40px 0;
+}
+
+/* ===== HEADER ===== */
+header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+header h1 {
+  font-size: 2.6rem;
+  color: #4fd1c5;
+}
+
+header p {
+  margin-top: 10px;
+  opacity: 0.85;
+}
+
+/* ===== SECTION ===== */
+.section {
+  margin-bottom: 50px;
+}
+
+.section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  border-left: 4px solid #4fd1c5;
+  padding-left: 12px;
+}
+
+/* ===== LIST ===== */
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 15px;
+}
+
+.item {
+  background: #161a33;
+  padding: 16px 18px;
+  border-radius: 8px;
+  border: 1px solid #4fd1c5;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.item:hover {
+  transform: translateY(-4px);
+  background: #1d2244;
+}
+
+.item span {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  margin-top: 60px;
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <h1>Learn</h1>
+    <p>Visual mental models for real understanding<br>
+       <strong>See concepts. Don’t memorize.</strong></p>
+  </header>
+
+  <!-- C MEMORY -->
+  <section class="section">
+    <h2>C Memory – Core Concepts</h2>
+    <div class="list">
+      <a class="item" href="domains/c/pointers.html">
+        Pointers<br><span>Address vs value</span>
+      </a>
+
+      <a class="item" href="domains/c/stack-vs-heap.html">
+        Stack vs Heap<br><span>Lifetime & scope</span>
+      </a>
+
+      <a class="item" href="domains/c/malloc-free.html">
+        malloc & free<br><span>Dynamic memory</span>
+      </a>
+
+      <a class="item" href="domains/c/dangling-segfault.html">
+        Dangling Pointer & Segfault<br><span>Why programs crash</span>
+      </a>
+
+      <a class="item" href="domains/c/pointer-to-pointer.html">
+        Pointer to Pointer<br><span>Double indirection</span>
+      </a>
+
+      <a class="item" href="domains/c/struct-memory-layout.html">
+        Struct Memory Layout<br><span>Padding & alignment</span>
+      </a>
+
+      <a class="item" href="domains/c/linked-list-visualizer.html">
+        Linked List Memory<br><span>Heap-based structures</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- OS -->
+  <section class="section">
+    <h2>Operating Systems</h2>
+    <div class="list">
+      <a class="item" href="domains/os/process-memory-layout.html">
+        Process Memory Layout<br><span>Text, Data, Heap, Stack</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Conceptoria · Built for deep understanding, not exams</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
