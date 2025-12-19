@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linked List Visualizer – Conceptoria</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f1220;
+  color: #eaeaf0;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* LIST AREA */
+.list-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 60px 0;
+  flex-wrap: wrap;
+}
+
+.node {
+  background: #161a33;
+  border: 2px solid #4fd1c5;
+  border-radius: 8px;
+  padding: 15px;
+  min-width: 120px;
+  position: relative;
+}
+
+.node .data {
+  font-size: 1.4rem;
+  color: #4fd1c5;
+}
+
+.node .next {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.arrow {
+  font-size: 2rem;
+}
+
+/* CONTROLS */
+.controls button {
+  margin: 10px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.primary {
+  background: #4fd1c5;
+  color: #000;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid #4fd1c5;
+  color: #4fd1c5;
+}
+
+.danger {
+  background: #ff4d4d;
+  color: #000;
+}
+
+/* EXPLANATION */
+.explain {
+  margin-top: 30px;
+  background: #161a33;
+  padding: 20px;
+  border-radius: 10px;
+  min-height: 100px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Linked List Memory Visualizer</h1>
+<p>Each node is dynamically allocated on the heap</p>
+
+<div class="container">
+
+  <!-- LINKED LIST -->
+  <div class="list-area" id="listArea">
+    <!-- Nodes appear here -->
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button class="primary" onclick="insertNode()">Insert Node</button>
+    <button class="secondary" onclick="deleteNode()">Delete Last Node</button>
+    <button class="secondary" onclick="resetAll()">Reset</button>
+  </div>
+
+  <!-- EXPLANATION -->
+  <div class="explain" id="explainBox">
+    Click "Insert Node" to allocate a node on heap.
+  </div>
+
+</div>
+
+<script>
+let list = [];
+let counter = 1;
+
+function insertNode() {
+  const node = {
+    data: counter,
+    address: "0x" + (500 + counter * 10)
+  };
+  list.push(node);
+  counter++;
+
+  renderList();
+  explain("malloc() allocates a new node on heap. Pointer links it to previous node.");
+}
+
+function deleteNode() {
+  if (list.length === 0) {
+    explain("List is empty. Nothing to delete.");
+    return;
+  }
+  list.pop();
+  renderList();
+  explain("free() deallocates the last node. Pointer updated.");
+}
+
+function renderList() {
+  const area = document.getElementById("listArea");
+  area.innerHTML = "";
+
+  list.forEach((node, index) => {
+    const div = document.createElement("div");
+    div.className = "node";
+    div.innerHTML = `
+      <div class="data">${node.data}</div>
+      <div class="next">
+        next → ${index < list.length - 1 ? list[index + 1].address : "NULL"}
+      </div>
+      <div class="next">addr: ${node.address}</div>
+    `;
+    area.appendChild(div);
+
+    if (index < list.length - 1) {
+      const arrow = document.createElement("div");
+      arrow.className = "arrow";
+      arrow.innerText = "➡";
+      area.appendChild(arrow);
+    }
+  });
+}
+
+function resetAll() {
+  list = [];
+  counter = 1;
+  document.getElementById("listArea").innerHTML = "";
+  explain("Linked list cleared. Heap memory released.");
+}
+
+function explain(text) {
+  document.getElementById("explainBox").innerText = text;
+}
+</script>
+
+</body>
+</html>
