@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stack vs Heap – Conceptoria</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f1220;
+  color: #eaeaf0;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* MEMORY LAYOUT */
+.memory {
+  display: flex;
+  justify-content: space-between;
+  margin: 50px 0;
+}
+
+.region {
+  width: 45%;
+  background: #161a33;
+  border: 2px solid #4fd1c5;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.region h2 {
+  color: #4fd1c5;
+}
+
+.stack-frame, .heap-block {
+  background: #0f1220;
+  border: 1px solid #4fd1c5;
+  border-radius: 6px;
+  padding: 10px;
+  margin: 10px 0;
+  animation: fadeIn 0.5s;
+}
+
+/* STACK GROW DIRECTION */
+.stack {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+/* CONTROLS */
+.controls button {
+  margin: 10px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.primary {
+  background: #4fd1c5;
+  color: #000;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid #4fd1c5;
+  color: #4fd1c5;
+}
+
+/* EXPLANATION */
+.explain {
+  margin-top: 30px;
+  background: #161a33;
+  padding: 20px;
+  border-radius: 10px;
+  min-height: 90px;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Stack vs Heap Memory</h1>
+<p>Visualize how memory is allocated and destroyed</p>
+
+<div class="container">
+
+  <div class="memory">
+    
+    <!-- STACK -->
+    <div class="region">
+      <h2>Stack (Auto Memory)</h2>
+      <div class="stack" id="stackArea">
+        <!-- Stack frames appear here -->
+      </div>
+    </div>
+
+    <!-- HEAP -->
+    <div class="region">
+      <h2>Heap (Dynamic Memory)</h2>
+      <div id="heapArea">
+        <!-- Heap blocks appear here -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button class="primary" onclick="callFunction()">Call Function</button>
+    <button class="secondary" onclick="returnFunction()">Return Function</button>
+    <button class="secondary" onclick="allocateHeap()">malloc()</button>
+    <button class="secondary" onclick="freeHeap()">free()</button>
+    <button class="secondary" onclick="resetAll()">Reset</button>
+  </div>
+
+  <!-- EXPLANATION -->
+  <div class="explain" id="explainBox">
+    Click buttons to simulate memory behavior.
+  </div>
+
+</div>
+
+<script>
+let stackDepth = 0;
+let heapCount = 0;
+
+function callFunction() {
+  stackDepth++;
+  const frame = document.createElement("div");
+  frame.className = "stack-frame";
+  frame.innerText = "Function Frame " + stackDepth + "\nint x = 10";
+  document.getElementById("stackArea").appendChild(frame);
+
+  explain("Function called → Stack frame allocated automatically.");
+}
+
+function returnFunction() {
+  const stack = document.getElementById("stackArea");
+  if (stack.children.length === 0) {
+    explain("No stack frame to destroy.");
+    return;
+  }
+  stack.removeChild(stack.lastChild);
+  stackDepth--;
+  explain("Function returned → Stack frame destroyed automatically.");
+}
+
+function allocateHeap() {
+  heapCount++;
+  const block = document.createElement("div");
+  block.className = "heap-block";
+  block.id = "heap" + heapCount;
+  block.innerText = "Heap Block " + heapCount + "\nint *p";
+  document.getElementById("heapArea").appendChild(block);
+
+  explain("malloc() allocates memory on heap. It persists until free().");
+}
+
+function freeHeap() {
+  const heap = document.getElementById("heapArea");
+  if (heap.children.length === 0) {
+    explain("No heap memory to free.");
+    return;
+  }
+  heap.removeChild(heap.lastChild);
+  heapCount--;
+  explain("free() releases heap memory manually.");
+}
+
+function resetAll() {
+  document.getElementById("stackArea").innerHTML = "";
+  document.getElementById("heapArea").innerHTML = "";
+  stackDepth = 0;
+  heapCount = 0;
+  explain("Memory reset. Program restarted.");
+}
+
+function explain(text) {
+  document.getElementById("explainBox").innerText = text;
+}
+</script>
+
+</body>
+</html>
