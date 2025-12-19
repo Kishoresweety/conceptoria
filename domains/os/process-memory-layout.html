@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Process Memory Layout – Conceptoria</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f1220;
+  color: #eaeaf0;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* MEMORY MAP */
+.memory-map {
+  margin: 50px auto;
+  width: 60%;
+  border: 2px solid #4fd1c5;
+  border-radius: 10px;
+  background: #161a33;
+  padding: 10px;
+}
+
+.segment {
+  margin: 8px 0;
+  padding: 15px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  border: 1px solid #4fd1c5;
+}
+
+.text { background: #1c2541; }
+.data { background: #24345c; }
+.bss  { background: #2b3c6e; }
+.heap { background: #1f4f4f; }
+.stack{ background: #4f1f2f; }
+
+/* ARROWS */
+.arrow {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+/* CONTROLS */
+.controls button {
+  margin: 10px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.primary {
+  background: #4fd1c5;
+  color: #000;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid #4fd1c5;
+  color: #4fd1c5;
+}
+
+.danger {
+  background: #ff4d4d;
+  color: #000;
+}
+
+/* EXPLANATION */
+.explain {
+  margin-top: 30px;
+  background: #161a33;
+  padding: 20px;
+  border-radius: 10px;
+  min-height: 120px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>OS Process Memory Layout</h1>
+<p>How a program lives inside memory</p>
+
+<div class="container">
+
+  <div class="memory-map" id="memoryMap">
+
+    <div class="segment text">
+      TEXT SEGMENT<br>
+      (Program Code, Read-only)
+    </div>
+
+    <div class="segment data">
+      DATA SEGMENT<br>
+      (Initialized Global / Static variables)
+    </div>
+
+    <div class="segment bss">
+      BSS SEGMENT<br>
+      (Uninitialized Globals)
+    </div>
+
+    <div class="arrow">⬆ Heap grows upward</div>
+
+    <div class="segment heap" id="heapSeg">
+      HEAP<br>
+      malloc(), free()
+    </div>
+
+    <div class="arrow">⬇ Stack grows downward</div>
+
+    <div class="segment stack" id="stackSeg">
+      STACK<br>
+      Function calls, local variables
+    </div>
+
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button class="primary" onclick="callFunction()">Call Function</button>
+    <button class="secondary" onclick="mallocMem()">malloc()</button>
+    <button class="secondary" onclick="freeMem()">free()</button>
+    <button class="danger" onclick="overflow()">Stack Overflow</button>
+    <button class="secondary" onclick="resetAll()">Reset</button>
+  </div>
+
+  <!-- EXPLANATION -->
+  <div class="explain" id="explainBox">
+    Click buttons to simulate process memory behavior.
+  </div>
+
+</div>
+
+<script>
+let stackDepth = 0;
+let heapSize = 0;
+
+function callFunction() {
+  stackDepth++;
+  document.getElementById("stackSeg").innerText =
+    "STACK\nFunction calls: " + stackDepth;
+  explain("Function call pushes a new stack frame. Stack grows downward.");
+}
+
+function mallocMem() {
+  heapSize++;
+  document.getElementById("heapSeg").innerText =
+    "HEAP\nAllocated blocks: " + heapSize;
+  explain("malloc() allocates memory on heap. Heap grows upward.");
+}
+
+function freeMem() {
+  if (heapSize === 0) {
+    explain("No heap memory to free.");
+    return;
+  }
+  heapSize--;
+  document.getElementById("heapSeg").innerText =
+    "HEAP\nAllocated blocks: " + heapSize;
+  explain("free() releases heap memory.");
+}
+
+function overflow() {
+  document.body.style.background = "#400";
+  explain("❌ STACK OVERFLOW\nStack exceeded its limit due to deep recursion or large local variables.");
+}
+
+function resetAll() {
+  stackDepth = 0;
+  heapSize = 0;
+  document.body.style.background = "#0f1220";
+  document.getElementById("stackSeg").innerText =
+    "STACK\nFunction calls, local variables";
+  document.getElementById("heapSeg").innerText =
+    "HEAP\nmalloc(), free()";
+  explain("Process restarted. Clean memory layout.");
+}
+
+function explain(text) {
+  document.getElementById("explainBox").innerText = text;
+}
+</script>
+
+</body>
+</html>
