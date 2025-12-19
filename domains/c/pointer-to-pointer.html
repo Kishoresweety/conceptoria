@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pointer to Pointer – Conceptoria</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f1220;
+  color: #eaeaf0;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* MEMORY */
+.memory {
+  display: flex;
+  justify-content: space-between;
+  margin: 50px 0;
+}
+
+.region {
+  width: 32%;
+  background: #161a33;
+  border: 2px solid #4fd1c5;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.region h2 {
+  color: #4fd1c5;
+}
+
+.block {
+  background: #0f1220;
+  border: 1px solid #4fd1c5;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+/* ARROWS */
+.arrow {
+  font-size: 2rem;
+  margin: 10px 0;
+}
+
+/* CONTROLS */
+.controls button {
+  margin: 10px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.primary {
+  background: #4fd1c5;
+  color: #000;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid #4fd1c5;
+  color: #4fd1c5;
+}
+
+/* EXPLANATION */
+.explain {
+  margin-top: 30px;
+  background: #161a33;
+  padding: 20px;
+  border-radius: 10px;
+  min-height: 100px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Pointer to Pointer</h1>
+<p>Understanding <code>int **pp</code> visually</p>
+
+<div class="container">
+
+  <div class="memory">
+
+    <!-- VARIABLE -->
+    <div class="region">
+      <h2>Variable</h2>
+      <div class="block">
+        int x = <span id="xVal">10</span><br>
+        Address: 0x100
+      </div>
+    </div>
+
+    <!-- POINTER -->
+    <div class="region">
+      <h2>Pointer</h2>
+      <div class="block">
+        int *p = <span id="pVal">NULL</span><br>
+        Address: 0x200
+      </div>
+    </div>
+
+    <!-- POINTER TO POINTER -->
+    <div class="region">
+      <h2>Pointer to Pointer</h2>
+      <div class="block">
+        int **pp = <span id="ppVal">NULL</span><br>
+        Address: 0x300
+      </div>
+    </div>
+
+  </div>
+
+  <div class="arrow" id="arrow1">⬇</div>
+  <div class="arrow" id="arrow2">⬇</div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button class="primary" onclick="assignP()">p = &x</button>
+    <button class="secondary" onclick="assignPP()">pp = &p</button>
+    <button class="secondary" onclick="readValue()">**pp</button>
+    <button class="secondary" onclick="modifyValue()">**pp = 50</button>
+    <button class="secondary" onclick="resetAll()">Reset</button>
+  </div>
+
+  <!-- EXPLANATION -->
+  <div class="explain" id="explainBox">
+    Click buttons to see pointer-to-pointer behavior.
+  </div>
+
+</div>
+
+<script>
+let x = 10;
+let pAssigned = false;
+let ppAssigned = false;
+
+function assignP() {
+  document.getElementById("pVal").innerText = "0x100";
+  pAssigned = true;
+  explain("p stores the address of x.");
+}
+
+function assignPP() {
+  if (!pAssigned) {
+    explain("p must point to x before pp can point to p.");
+    return;
+  }
+  document.getElementById("ppVal").innerText = "0x200";
+  ppAssigned = true;
+  explain("pp stores the address of pointer p.");
+}
+
+function readValue() {
+  if (!ppAssigned) {
+    explain("pp is NULL. Cannot dereference.");
+    return;
+  }
+  explain("**pp means go to p, then to x → value = " + x);
+}
+
+function modifyValue() {
+  if (!ppAssigned) {
+    explain("pp is NULL. Cannot modify value.");
+    return;
+  }
+  x = 50;
+  document.getElementById("xVal").innerText = x;
+  explain("**pp = 50 modifies x through two levels of indirection.");
+}
+
+function resetAll() {
+  x = 10;
+  pAssigned = false;
+  ppAssigned = false;
+  document.getElementById("xVal").innerText = x;
+  document.getElementById("pVal").innerText = "NULL";
+  document.getElementById("ppVal").innerText = "NULL";
+  explain("Memory reset.");
+}
+
+function explain(text) {
+  document.getElementById("explainBox").innerText = text;
+}
+</script>
+
+</body>
+</html>
