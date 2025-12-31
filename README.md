@@ -20,5 +20,5 @@ Just mental models.
 
 If you're learning C, OS, or preparing for interviews, this might help.
 
-### 🔗 Live: https://yourusername.github.io/conceptoria
+### https://kishoresweety.github.io/conceptoria/
 Feedback welcome.
